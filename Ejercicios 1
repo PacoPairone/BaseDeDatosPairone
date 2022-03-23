@@ -1,0 +1,53 @@
+CREATE database imdb;
+USE imdb;
+
+CREATE table film
+(
+	film_id INT PRIMARY KEY AUTO_INCREMENT, 
+	title VARCHAR(20), 
+	description VARCHAR(50), 
+	release_year DATE
+  );
+
+
+CREATE table actor
+(
+	actor_id INT PRIMARY KEY AUTO_INCREMENT, 
+	first_name VARCHAR(20), 
+	last_name VARCHAR(20)
+);
+
+
+CREATE table film_actor
+(
+	actor_id INT,
+	film_id INT
+);
+		
+
+
+alter table film add COLUMN last_update date;
+alter table actor add COLUMN last_update date;
+
+
+
+alter table film_actor add FOREIGN KEY (actor_id) references actor(actor_id);
+alter table film_actor add FOREIGN KEY (film_id) references film(film_id);
+
+
+
+insert into actor(actor_id,first_name,last_name) values (1,"Piter","Parker");
+insert into actor(actor_id,first_name,last_name) values (2,"Cillian","Murphy");
+insert into actor(actor_id,first_name,last_name) values (3,"Chris","Hemsworth");
+
+insert into film(film_id ,title , description, release_year) values (1,"El hoyo","Pelicula de suspenso", '2000/08/10');
+insert into film(film_id ,title , description, release_year) values (2,"El conjuro","Pelicula de terror", '1976/12/09');
+insert into film(film_id ,title , description, release_year) values (3,"Doctor Strange","Las fuerzas del mal atacan", '2012/08/10');
+
+insert into film_actor (actor_id, film_id) values (1,3);
+insert into film_actor (actor_id, film_id) values (2,1);
+insert into film_actor (actor_id, film_id) values (3,2);
+
+select * from  film f;
+select * from actor a;
+select * from film_actor; 
