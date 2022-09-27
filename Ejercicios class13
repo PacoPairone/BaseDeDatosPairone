@@ -11,7 +11,7 @@ INSERT INTO
         email,
         address_id,
         active
-    )
+        )
 SELECT
     1,
     'Paco',
@@ -21,14 +21,11 @@ SELECT
     1
 FROM address ad
 WHERE ad.city_id IN (
-        SELECT ci.city_id
-        FROM
-            country co,
-            city ci
-        WHERE
-            co.country = "United States"
-            AND co.country_id = ci.country_id
-            AND ci.city_id = ad.city_id
+SELECT ci.city_id
+FROM country co, city ci
+WHERE co.country = "United States"
+AND co.country_id = ci.country_id
+AND ci.city_id = ad.city_id
     );
 
 SELECT * FROM customer WHERE last_name = "Pairone";
@@ -46,17 +43,13 @@ INSERT INTO
         staff_id
     )
 SELECT CURRENT_TIMESTAMP, (
-        SELECT
-            MAX(i.inventory_id)
-        FROM inventory i
-            INNER JOIN film f USING(film_id)
-        WHERE
-            f.title LIKE 'ACE GOLDFINGER'
+SELECT MAX(i.inventory_id) FROM inventory i
+INNER JOIN film f USING(film_id) 
+WHERE f.title LIKE 'ACE GOLDFINGER'
     ),
     600,
     NULL, (
-        SELECT
-            manager_staff_id
+        SELECT manager_staff_id
         FROM store
         WHERE store_id = 2
         ORDER BY RAND()
@@ -73,15 +66,10 @@ SELECT DISTINCT rating
 FROM film;
 
 UPDATE film SET release_year = 2000 WHERE rating = 'PG';
-
 UPDATE film SET release_year = 2001 WHERE rating ='G';
-
 UPDATE film SET release_year = 2002 WHERE rating ='NC-17';
-
 UPDATE film SET release_year = 2003 WHERE rating ='PG-13';
-
 UPDATE film SET release_year = 2004 WHERE rating = 'R';
-
 SELECT * FROM film WHERE rating = 'PG';
 
 #Return a film
@@ -97,8 +85,7 @@ ORDER BY r.rental_date DESC
 LIMIT 1;
 
 UPDATE rental
-SET
-    return_date = CURRENT_TIMESTAMP
+SET return_date = CURRENT_TIMESTAMP
 WHERE rental_id = 16050;
 
 #Try to delete a film
@@ -106,8 +93,7 @@ WHERE rental_id = 16050;
 #Write all the necessary delete statements to entirely remove the film from the DB.
 SELECT *
 FROM film
-ORDER BY film_id DESC
-LIMIT 1;
+ORDER BY film_id DESC LIMIT 1;
 
 DELETE FROM film WHERE title = 'ZORRO ARK';
 
@@ -118,43 +104,34 @@ DELETE FROM film WHERE title = 'ZORRO ARK';
 #La solucion para esto es borrar primero(en order de hijo a padre) las row a las que la pelicula esta relacionada.
 #Tambien se puede desactivar FOREIGN KEY CHECK y luego volver a activarlo, pero esto no es recomendable
 DELETE FROM payment
-WHERE rental_id IN (
-        SELECT rental_id
-        FROM rental
-            INNER JOIN inventory USING(inventory_id)
-        WHERE film_id = 1000
+WHERE rental_id IN ( SELECT rental_id FROM rental
+INNER JOIN inventory USING(inventory_id)
+WHERE film_id = 1000
     );
 
 DELETE FROM rental
 WHERE inventory_id IN (
-        SELECT inventory_id
-        FROM inventory
-        WHERE film_id = 1000
+SELECT inventory_id FROM inventory
+WHERE film_id = 1000
     );
 
 DELETE FROM inventory WHERE film_id = 1000;
-
 DELETE FROM film_actor WHERE film_id = 1000;
-
 DELETE FROM film_category WHERE film_id = 1000;
-
 DELETE FROM film WHERE title = 'ZORRO ARK';
 
 #6
 SELECT inventory_id, film_id
 FROM inventory
 WHERE inventory_id NOT IN (
-        SELECT inventory_id
-        FROM inventory
-            INNER JOIN rental USING (inventory_id)
-        WHERE
-            return_date IS NULL
+SELECT inventory_id FROM inventory
+INNER JOIN rental USING (inventory_id)
+WHERE return_date IS NULL
     );
 
-#(si no tiene rental aparece lo mismo)
+
 SELECT *
-FROM inventory i
-    LEFT JOIN rental r USING(inventory_id)
+FROM inventory i LEFT JOIN rental r USING(inventory_id)
 WHERE r.return_date IS NULL;
 
 #inventory_id 1 film_id 1
