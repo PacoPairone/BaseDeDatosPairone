@@ -98,3 +98,5 @@ SHOW CREATE FUNCTION inventory_in_stock;
 CALL film_in_stock(2,2,@a);
 SELECT @a;
 SHOW CREATE PROCEDURE film_in_stock;
+
+pacooooooo putoooooooooo
